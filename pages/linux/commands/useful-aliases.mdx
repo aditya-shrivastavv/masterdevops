@@ -1,0 +1,71 @@
+# Useful Aliases
+
+## Aliases for `ls`
+
+```bash
+alias ls="ls --classify"
+
+# Show all, sort by extension
+alias la="ls -lAXh --color=always"
+
+# fix typo (missing space)
+alias ls-al="ls -al"
+
+alias l="ls -l"
+
+alias la="ls -la"
+```
+
+:::tip
+
+You an use aliases to prevent typos, for example:
+
+```bash
+alias cd..="cd .."
+```
+
+:::
+
+## Alias for clear screen
+
+```bash
+alias c="clear"
+```
+
+## Aliases for `cp`
+
+Ensures that when copying files, progress is always displayed and files do not get overwritten without a confirmation:
+
+```bash
+alias cp="cp -iv"
+```
+
+## Aliases for `mv`
+
+Ensures that when moving files, progress is always displayed and files do not get overwritten without a confirmation:
+
+```bash
+alias mv="mv -iv
+```
+
+## Aliases for `rm`
+
+```bash
+# prompt before deleting
+alias rm="rm -i"
+```
+
+## Aliases for `cd`
+
+```bash
+# Use alias to cd into to sub-sub directories:
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+```
+
+## Aliases for `pwd`
+
+```bash
+alias .='echo $PWD'
+```

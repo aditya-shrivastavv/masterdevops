@@ -1,0 +1,104 @@
+# Linux File System
+
+## Directory Structure
+
+The term 'directory' and 'folder' are used interchangably.
+
+### `/home`
+
+The home directory storage is available for user files. All users have a subdirectory inside `/home`. If a system has only 1 user, then a single directory with the name of the user will be visible.
+
+### `/root`
+
+It's the home directory for a root (aka superuser 🥷) user. Keep in mind that it's not the '/' (root) file system. We need to `sudo` privilages to access it.
+
+### `/bin`
+
+Although binary files are scattered all over our system, the bin folder acts as a library to all binary files. This directory includes user executable (binary) files. The executables of most of the basic commands we run are stored here, for example `cd`, `ls`, `pwd` etc.
+
+### `/sbin`
+
+sbin contains system-binary files. They are executables utilized for system administration. Everything that requires root privilages or is related to the system is stored here. The executables certain commands are stored here, for example `shutdown`, `ifconfig`, `fdisk` etc.
+
+### `/lib`
+
+It includes shared library files that are needed to start the system.
+
+There are some more directories related to lib like `lib32`, `libx32` and `lib64`. They all have the same role and are just there for compatiblily in various system architectures.
+
+### `/boot`
+
+It includes the static kernel and bootloader configuration and executable files needed to start a Linux computer.
+
+import { Callout } from 'nextra/components'
+
+<Callout type="error" emoji="⛔">
+  You would never want to go in there and do some stuff there, It's DANGEROUS.
+</Callout>
+
+### `/etc`
+
+It includes the local system configuration files for the host system. You will need to interact with the file in here, if you are changing or customizing something.
+
+### `/opt`
+
+Contains programs that have all dependencies installed in one directory. What does it mean? Softwares installed in linux are distributed throughout multiple directories in the file system.
+But some softwares that contain single binary or packaging is directed towards one directory `opt`.
+
+### `/usr`
+
+They are read-only and shareable files, including executable libraries and binaries, man files, several documentation or fonts. Basically read-only files that are not user specific, means can be used by multiple users.
+
+### `/var`
+
+Here, variable data files are saved, data that changes with the system operations. It can contain things such as MySQL, log files, other database files, email inboxes, web server data files, and much more.
+
+You will mostly peek into this directory for diffrent `log` files.
+
+### `/tmp`
+
+It is a temporary directory used by the OS and several programs for storing temporary files. Also, users may temporarily store files here. Remember that files may be removed without prior notice at any time in this directory.
+
+### `/dev`
+
+It stands for devices directory not developmemt directory, It includes the device file for all hardware devices connected to the system. These aren't device drivers; instead, they are files that indicate all devices on the system and provide access to these devices.
+
+It also includes a widely used folder which is `/dev/null` which is used to discard some output from the command.
+
+### `/media`
+
+A place for mounting external removable media devices like USB thumb drives that might be linked to the host.
+
+### `/mnt`
+
+It is a temporary mount point for basic filesystems that can be used at the time when the administrator is working or repairing a filesystem. If you are using WSL (windows subsystem for linux) then the windows file system will be found here, the C drive, D drive etc.
+
+### `/proc`
+
+It is a virtual directory like `/dev`. It contains information about your computer, such as information about your CPU and the kernel your Linux system is running. As with `/dev`, the files and directories are generated when your computer starts, or on the fly, as your system is running and things change.
+
+### `/sys`
+
+It is another virtual directory like `/proc` and `/dev` and also contains information from devices connected to your computer.
+
+In some cases you can also manipulate those devices. For example, To change the brightness of the screen of my laptop you can modifying the value stored in the `/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness` file (on your machine you will probably have a different file). But to do that you have to become superuser. The reason for that is, as with so many other virtual directories, messing with the contents and files in /sys can be dangerous and you can trash your system.
+
+<Callout type="error" emoji="⛔">
+  DO NOT TOUCH, Until you are sure you know what you are doing.
+</Callout>
+
+### `/run`
+
+It is another new directory which is used by system processes to store temporary data for their own reasons.
+
+<Callout type="error" emoji="⛔">
+  DO NOT TOUCH, Until you are sure you know what you are doing.
+</Callout>
+
+### `/srv`
+
+This directory contains data for servers. If you are running a web server from your Linux box, your HTML files for your sites would go into `/srv/http` (or `/srv/www`). If you were running an FTP server, your files would go into `/srv/ftp`.
+
+### `/snap`
+
+It is a package manager

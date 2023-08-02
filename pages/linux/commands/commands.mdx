@@ -1,0 +1,284 @@
+# Commands
+
+## Basic
+
+### `bg`
+
+Sends a job to background.
+
+```bash
+# syntax
+bg [job_id...]
+long_running_command &  # start new process in background
+
+# example
+sleep 10000 &
+bg %0     # put the job with job id 0 in the background
+```
+
+- If an instant command is sent to background, it will obviously be completed instantly, for example `pwd`.
+- To send a currently running job in the background use [bg](#bg) and to bring a background job to the foreground use [fg](#fg) and when executed without arguments, will take the most recent background job to the foreground..
+
+:::note Related commands
+
+- [`kill`](#kill) - Kill job.
+- [`fg`](#fg) - Send job to foreground.
+- [`jobs`](#jobs) - List active jobs.
+- [`suspend`](#suspend) - Suspend execution of this shell.
+- [`wait`](#wait) - Wait for a process to complete.
+
+:::
+
+### `alias`
+
+Create an alias, aliases allow a string to be substituted for a word when it is used as the **first word** of a simple command.
+
+```bash
+# syntax
+alias [name[=value] ...]
+
+# example
+alias lss="ls -lsah"
+```
+
+- use `alias -p` or just `alias` to print all currently set aliases.
+- The value of an alias can be set to an expression including spaces, command options and/or variables, the expression must be quoted, either with 'Single quotes' that will be evaluated **dynamically** each time the Alias is used, or "Double quotes" which will be **evaluated once** when the alias is created.
+- The value cannot contain any positional parameters ($1 etc), if you need to do that use a shell [function](#functions) instead.
+- To make an alias permanent, make a file `~/.bash_aliases` using your favorite text editor and type the alias commands into the file. `.bash_aliases` will run at login (or you can just execute it with `source .bash_aliases` )
+
+:::note Related commands
+
+- [`unalias`](#unalias) - To remove (unset) an alias
+- [`export`](#export) - Set an environment variable.
+- [`env`](#env) - Display, set, or remove environment variables.
+- [`echo`](#echo) - Display message on screen.
+- [`readonly`](#readonly) - Mark variables/functions as readonly.
+- [`shift`](#shift) - Shift positional parameters.
+
+Equivalent Windows PowerShell command: `Set-Alias` - Create or change an alias, `Remove-item alias:aliasname`.
+
+:::
+
+### `apropos`
+
+Search the manual page names and descriptions from a keyword.
+
+```bash
+# syntax
+apropos keyword
+
+# example
+apropos remove user -a
+# delgroup (8)         - remove a user or group from the system
+# deluser (8)          - remove a user or group from the system
+# sg_sanitize (8)      - remove all user data from disk with SCSI SANITIZE command
+```
+
+#### Useful Options for `apropos`
+
+- `-a` or `--and`
+
+  Only display items that match **all** the supplied keywords. The default is to display items that match any keyword. |
+
+- `-e` or `--exact`
+
+  Each keyword will be exactly matched against the page names and the descriptions. i.e. with case. |
+
+:::note Related commands
+
+- [`man`](#man) - Help manual.
+
+Equivalent Windows command: `HELP command_name`.
+
+:::
+
+### `basename`
+
+Strip directory and suffix from filenames, means print NAME with any leading directory components removed. If specified, also remove a trailing SUFFIX.
+
+```bash
+# syntax
+basename NAME [SUFFIX]
+basename OPTION... NAME...
+
+# example
+basename /usr/bin/sort
+    # -> "sort"
+
+basename include/stdio.h .h
+    # -> "stdio"
+
+basename -s .h include/stdio.h
+    # -> "stdio"
+
+basename -a any/str1 any/str2
+    # -> "str1" followed by "str2"
+```
+
+#### Useful Options for `basename`
+
+- `-a` or `--multiple`
+
+  support multiple arguments and treat each as a NAME
+
+- `-s` or `--suffix=SUFFIX`
+
+  remove a trailing SUFFIX; implies -a
+
+- `-z` or `--zero`
+
+  end each output line with NUL, not newline
+
+:::note Related commands
+
+- [`dir`](#dir) - Briefly list directory contents.
+- [`dirname`](#dirname) - Convert a full pathname to just a path.
+- [`ls`](#ls) - List information about file(s).
+
+:::
+
+### `cat`
+
+Concatenate and print (display) the content of files.
+
+```bash
+# syntax
+cat [Options] [File]...
+
+# example
+cat myfile.txt
+cat *.txt   # display all .txt files
+cat File1.txt File2.txt > union.txt  # concatenate two files
+
+# view CPU and memory information
+cat /proc/cpuinfo
+cat /proc/meminfo
+```
+
+#### Useful Options for `cat`
+
+| Options                      | Usage                                         |
+| ---------------------------- | --------------------------------------------- |
+| `-A` or `--show-all`         | equivalent to `-vET`                          |
+| `-b` or `--number-nonblank`  | number nonblank output lines                  |
+| `-e`                         | equivalent to `-vE`                           |
+| `-E` or `--show-ends`        | display $ at end of each line                 |
+| `-n` or `--number`           | number all output lines                       |
+| `-s` or `--squeeze-blank`    | never more than one single blank line         |
+| `-t`                         | equivalent to `-vT`                           |
+| `-T` or `--show-tabs`        | display TAB characters as ^I                  |
+| `-v` or `--show-nonprinting` | use ^ and M- notation, except for LFD and TAB |
+
+:::note Related commands
+
+- [`cp`](#cp) - Copy one or more files to another location.
+- [`mv`](#mv) - Move or rename files or directories.
+- [`pv`](#pv) - Monitor the progress of data through a pipe.
+- [`tac`](#tac) - Concatenate and write files in reverse.
+- [`hexdump`](#hexdump) - View binary file
+
+[Stupid Cat tricks](https://souptonuts.sourceforge.net/chirico/articles/1/stupidcat.html) - by Mike Chirico.
+
+Equivalent Windows command: `TYPE` - Display the contents of a text file.
+
+:::
+
+### `cd`
+
+Change Directory - change the current working directory to a specific Folder.
+
+```bash
+# syntax
+cd [Options] [Directory]
+
+# example
+cd /usr/local/sybase   # move to the sybase folder:
+cd /var/log            # change to another folder:
+cd -                   # quickly get back
+    # pwd -> /usr/local/sybase
+cd ..                  # move up one folder:
+    # pwd -> /usr/local/
+cd                     # back to your home folder
+```
+
+- If directory is given, changes the shell's working directory to it. If not, changes to HOME (shell variable).
+- `cd -` will go back to the last folder you looked at. This does not stack, so issuing `cd -` repeatedly will just toggle between two directories, to go back further use `pushd`/`popd`.
+- ./ or just . is shorthand for the current directory.
+
+#### Useful Options for `cd`
+
+| Options | Usage                           |
+| ------- | ------------------------------- |
+| `-P`    | Do not follow symbolic links    |
+| `-L`    | Follow symbolic links (default) |
+
+:::note Related commands
+
+- [`popd`](#popd) - Restore the previous value of the current directory.
+- [`pushd`](#pushd) - Save and then change the current directory.
+- [`pwd`](#pwd) - Print Working Directory.
+- [`shopt`](#shopt) - Shell Options for the cd builtin.
+
+Equivalent Windows command: `CD` - Change Directory.
+
+:::
+
+### `bind`
+
+### `fg`
+
+### `jobs`
+
+### `suspend`
+
+### `wait`
+
+### `unalias`
+
+### `functions`
+
+### `export`
+
+### `env`
+
+### `echo`
+
+### `readonly`
+
+### `shift`
+
+### `man`
+
+### `kill`
+
+### `dir`
+
+### `dirname`
+
+### `ls`
+
+### `cp`
+
+### `mv`
+
+### `pv`
+
+### `tac`
+
+### `hexdump`
+
+### `popd`
+
+### `pushd`
+
+### `pwd`
+
+### `shopt`
+
+## More
+
+### `aspell`
+
+### `base32`
+
+### `base64`

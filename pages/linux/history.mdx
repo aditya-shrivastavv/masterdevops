@@ -1,0 +1,105 @@
+# History of Linux
+
+I think it's useful to know why something was created to understand what problems it can solve for you.
+
+## UNIX
+
+Linux is considered a [Unix-like](https://en.wikipedia.org/wiki/Unix_philosophy) operating system which basically means that Linux derives heavy inspiration from Unix without actually conforming to be a full Unix operating system. _macOS_ and _FreeBSD_ would be two more examples of a Unix-like operating system.
+
+About 30 years ago, imagine computers as big as houses, while the sizes of those computers posed substantial problems, there was one thing that made this even worse: every computer had a different operating system. Software was always customized to serve a specific purpose, and software for one given system didn't run on another system. Being able to work with one system didn't automatically mean that you could work with another.
+
+In 1969, a team of developers in the Bell Labs laboratories started working on a solution, a project which was named "UNIX". It was an operating system that has pretty much inspired every operating system created since then.
+
+A big part of Unix software is the idea of the "[Unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy)" which is a sort of digital minimalism when it comes to coding.
+
+### UNIX Philosophy
+
+The idea is instead of having a few very specialized tools (or programs) we should have many small, composable tools that we can use to compose to solve larger problems.
+
+Here's what they originally wrote:
+
+- Make each program do one thing well. To do a new job, build afresh rather than complicate old programs by adding new "features".
+- Expect the output of every program to become the input to another, as yet unknown, program. Don't clutter output with extraneous information. Avoid stringently columnar or binary input formats. Don't insist on interactive input.
+- Design and build software, even operating systems, to be tried early, ideally within weeks. Don't hesitate to throw away the clumsy parts and rebuild them.
+- Use tools in preference to unskilled help to lighten a programming task, even if you have to detour to build the tools and expect to throw some of them out after you've finished using them.
+
+The code recycling features were very important. Until then, all available computer systems were written in a code specifically developed for one system. UNIX on the other hand needed only a small piece of that special code, which is now commonly named the **kernel**.
+
+This kernel is the only piece of code that needs to be adapted for every specific system and forms the base of the UNIX system. The operating system and all other functions were built around this kernel and written in a higher level programming language like C.
+
+> "The C programming language was devised in the early 1970s as a system implementation language for the nascent Unix operating system. Derived from the typeless language BCPL, it evolved a type structure; created on a tiny machine as a tool to improve a meager programming environment, it has become one of the dominant languages of today. This paper studies its evolution."
+>
+> Source - [Bell Labs Website](https://www.bell-labs.com/usr/dmr/www/chist.html)
+
+### UNIX Family Chart
+
+![Linux Timeline](/imgs/linux/linux-timeline.png)
+
+{/* TODO: make this image non-transparent */}
+
+By [Guillem](https://commons.wikimedia.org/wiki/Special:Contributions/Guillem), [Wereon](https://commons.wikimedia.org/wiki/User:Wereon), [Hotmocha](https://commons.wikimedia.org/wiki/User:Hotmocha) (copied from [old version's](https://commons.wikimedia.org/wiki/File%253AUnix.png) history)Christoph S. (redrew the image with Inkscape) - Original image: [Image:Unix.png](https://commons.wikimedia.org/wiki/File%253AUnix.png), Public Domain, [Link](https://commons.wikimedia.org/w/index.php?curid=1667764)
+
+## Linux
+
+Again, Linux isn't directly Unix, just directly inspired by it, and incorporates many of its ideas and interfaces into it. It was created in 1991 by Linus Torvalds who is still an influential figure today and still runs the Linux project.
+
+![Linus Torwalds](/imgs/linux/Linus-Torvalds.webp)
+
+He created Linux because at the time there was no single free, open-source reimplementation of the Unix operating system (the BSD kernel wasn't yet available yet) so he wrote his own kernel which became known as the Linux kernel.
+
+He started to ask questions, looking for answers and solutions that would help him get UNIX on his PC. Below is one of his first posts in comp.os.minix, dating from 1991:
+
+![Linus' post](/imgs/linux/old-message.png)
+
+From here the project took off and was adopted far and wide. (As of writing) all of the top 500 super computers run on Linux, much of the mobile phone market share (thanks to Android being based on Linux), and many of the servers running your favorite websites. Suffice to say, Linux is incredibly important to the modern computing world.
+
+### Why Linux
+
+So why Linux over other operating systems?
+
+- First, it's free. Anyone can use Linux to do anything without paying anyone a dime.
+
+  This is a huge advantage for students who don't have any money and for large businesses running thousands or tens-of-thousands of servers. It save them millions of dollars to not have to pay for an operating system.
+
+- It's very well maintained.
+
+  Due to it's popularity, it has a lot of eyes on it. Engineers from all over the world and all over the industry are constantly contributing fixes and new features to Linux, both on their own free time and during the course of their jobs.
+
+- It runs just about anywhere.
+
+  Linux not only runs on x86 (the Intel / AMD processor architecture your computer is likely using) but it runs on Internet-of-Things devices, phones, fridges, cars, etc. If anything has a processor in it, chances are you can get Linux running on it already.
+
+- Linux eco-system
+
+  Most of the the things you need already exist for it. Linux already has many of the tools one would need to run servers, devices, media, etc. all on it already, meaning you wouldn't need to create it. Linux has a rich ecosystem of programs available that are also likely free.
+
+- Community support
+
+  The knowledgebase for Linux is enormous. Having a problem? Chances are someone else already had the same problem and the solution already exists on StackOverflow or someone's blog. Because the knowledgebase is so large, it's really easy to hire someone with deep knowledge of Linux and for you it's profitable to learn Linux because so many jobs demand the skillset.
+
+### Linux Architecture
+
+At its core, Linux is the kernel. Anything based on this Linux kernel is a considered a Linux distribution, or distro for short.
+
+![linux kernel map](/imgs/linux/linux-kernel-map.png)
+
+By [Conan](https://en.wikipedia.org/wiki/User:Conan) at [English Wikipedia](https://en.wikipedia.org/wiki/), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0), [Link](https://commons.wikimedia.org/w/index.php?curid=6092674)
+
+It might look scary to you, but don't worry you don't need to understand everything, But suffice to say it's the core of what's needed to start and run a system and nothing else. It manages the booting, memory, processes, drivers, and other lowest-level concerns of the operating system. Beyond that, the various different distros use those kernel features to build their distros on top of.
+
+A lot of these distros will share components even amongst themselves. For example, a lot of them use KDE or Gnome for their graphical desktops.
+
+### Distros
+
+In world of computer science, distributions are called in short as **distros**. There are countless number of distros of Linux. They all do different things well and some of them are very specialized in what sorts of things they can accomplish. As a starting point [Ubuntu](https://ubuntu.com/) is a very good choice because it's the best general purpose distro for many use cases. It's a downstream distro of Debian where downstream means that Ubuntu builds upon the base of Debian. Ubuntu is a very polished (has a nice interface) distro of Linux which I think it is the easiest to use. It's backed a company called [Canonical](https://canonical.com/) who puts a lot of love into the distro.
+
+Ubuntu is a great choice for running Linux on as your main OS, for servers in the cloud, for IoT, or for any other of myriad things. It's a really great, flexible distribution.
+
+I'll toss a few of the other, more popular distros for you to take a look at too. They all have some differences and some specialize in some of the core areas, for example [Kali](https://www.kali.org/) offers various tools for [penetration testing](https://en.wikipedia.org/wiki/Penetration_test).
+
+- [Debian](https://www.debian.org/)
+- [Mint](https://linuxmint.com/)
+- [Red Hat](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux)
+- [Alpine](https://www.alpinelinux.org/)
+- [Kali](https://www.kali.org/)
+- [CentOS](https://www.centos.org/)
