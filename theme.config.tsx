@@ -1,17 +1,26 @@
 import React from 'react'
 import { DocsThemeConfig } from 'nextra-theme-docs'
+import { useRouter } from 'next/router'
 
 const config: DocsThemeConfig = {
-  logo: <span>My Project</span>,
+  logo: <span>MASTERDEVOPS.ORG</span>,
   project: {
-    link: 'https://github.com/shuding/nextra-docs-template',
+    link: 'https://github.com/aditya-shrivastavv/masterdevops',
   },
-  chat: {
-    link: 'https://discord.com',
-  },
-  docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
+  docsRepositoryBase: 'https://github.com/aditya-shrivastavv/masterdevops',
   footer: {
-    text: 'Nextra Docs Template',
+    text: 'masterdevops.org',
+  },
+  sidebar: {
+    defaultMenuCollapseLevel: 2,
+  },
+  useNextSeoProps() {
+    const router = useRouter()
+    if (router.pathname != '/') {
+      return {
+        titleTemplate: '%s - MasterDevOps',
+      }
+    }
   },
 }
 
