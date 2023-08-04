@@ -1,5 +1,5 @@
 import React from 'react'
-import Ztext from 'react-ztext'
+import Script from 'next/script'
 
 const title = [
   {
@@ -53,26 +53,31 @@ const title = [
 ]
 
 const Title = () => {
-  return title.map((letter) => (
-    <Ztext
-      depth="2rem"
-      direction="both"
-      event="pointer"
-      eventDirection="default"
-      eventRotation="30deg"
-      fade={false}
-      layers={10}
-      perspective="none"
-      style={{
-        fontSize: '6.2rem',
-        fontWeight: 'bold',
-        marginInline: '2px',
-        color: letter.color,
-      }}
-    >
-      {letter.letter}
-    </Ztext>
-  ))
+  return (
+    <>
+      <Script src="https://bennettfeely.com/ztext/js/ztext.min.js"></Script>
+
+      <div className="flex justify-center">
+        {title.map((letter) => (
+          <span
+            key={letter.color}
+            data-z
+            data-z-layers="10"
+            data-z-depth="2rem"
+            data-z-event="pointer"
+            data-z-eventRotation="45deg"
+            data-z-eventDirection="default"
+            className={`font-bold mx-[2px] text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl`}
+            style={{
+              color: letter.color,
+            }}
+          >
+            {letter.letter}
+          </span>
+        ))}
+      </div>
+    </>
+  )
 }
 
 export default Title
