@@ -1,0 +1,39 @@
+{
+  "Callout Related Commands": {
+    "scope": "mdx",
+    "prefix": "RelatedCommands",
+    "body": [
+      "<Callout type=\"info\">",
+      "<h3 className=\"text-lg font-bold mb-2\">Related Commands</h3>",
+      "<ul>",
+      "<li>[`$1`](#$1) - $2</li>",
+      "</ul>",
+      "</Callout>"
+    ],
+    "description": "Related commands callout block snippet"
+  },
+  "Bash Block": {
+    "scope": "mdx",
+    "prefix": "BashBlock",
+    "body": ["```bash {2} showLineNumbers copy filename=\"Bash\"", "$1", "```"],
+    "description": "Bash shell customized code block"
+  },
+  "Command Defination": {
+    "scope": "mdx",
+    "prefix": "CommandDefination",
+    "body": ["<p className=\"font-mono mt-3\">", "$1", "</p>"],
+    "description": "Defination of anything, has a different font family set."
+  },
+  "Command Options Table": {
+    "scope": "mdx",
+    "prefix": "OptionsTable",
+    "body": [
+      "<h3 className=\"text-lg font-bold mb-2\">Useful Options</h3>",
+      "",
+      "| Short form | Long form | Usage |",
+      "| :--------- | :-------- | :---- |",
+      "|  |  |  |"
+    ],
+    "description": "Defination of anything, has a different font family set."
+  }
+}
