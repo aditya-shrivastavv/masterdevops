@@ -1,0 +1,167 @@
+import { Callout } from 'nextra/components'
+
+# What Are Namespaces and cgroups, and How Do They Work?
+
+## Namespaces
+
+Namespaces were introduced into the Linux kernel around 2002. Over the years, additional tooling and namespace types were incorporated. However, it was not until 2013 that genuine container support was added to the Linux kernel. This development significantly enhanced the usefulness of namespaces and made them accessible to a broader audience.
+
+But what are namespaces exactly?
+
+<p className="font-mono mt-3">
+  “Namespaces are a feature of the Linux kernel that partitions kernel resources
+  such that one set of processes sees one set of resources while another set of
+  processes sees a different set of resources.”
+</p>
+
+In other words, the key feature of namespaces is that they isolate processes from each other. When multiple services are running on a server, this isolation ensures that each service and its associated processes are separated from others. As a result, changes have a limited impact, and security concerns are minimized due to the reduced scope of potential issues.
+
+Using containers during the development process gives the developer an isolated environment that looks and feels like a complete VM. It’s not a VM, though – it’s a process running on a server somewhere. If the developer starts two containers, there are two processes running on a single server somewhere – but they are isolated from each other.
+
+### Types of Namespaces
+
+The Linux kernel contains various types of namespaces, each with distinct properties:
+
+1. [User Namespace](https://man7.org/linux/man-pages/man7/user_namespaces.7.html): Provides unique user IDs and group IDs to processes. A process can have root privilege within its user namespace without having it in other user namespaces.
+
+2. [Process ID (PID) Namespace](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html): Assigns a set of PIDs to processes independently from other namespaces. The first process in a new namespace gets PID 1, and subsequent PIDs are assigned to child processes. If a child process has its own PID namespace, it has PID 1 in that namespace as well as its own PID in the parent process' namespace.
+
+3. [Network Namespace](https://man7.org/linux/man-pages/man7/network_namespaces.7.html): Offers an isolated network stack with its private routing table, IP addresses, socket listings, connection tracking table, firewall, and other network resources.
+
+4. [Mount Namespace](https://man7.org/linux/man-pages/man7/mount_namespaces.7.html): Provides an independent list of mount points visible to processes in the namespace. This allows mounting and unmounting filesystems without affecting the host filesystem.
+
+5. [Interprocess Communication (IPC) Namespace](https://man7.org/linux/man-pages/man7/ipc_namespaces.7.html): Has its own IPC resources, like POSIX message queues.
+
+6. [UNIX Time-Sharing (UTS) Namespace](https://man7.org/linux/man-pages/man7/uts_namespaces.7.html): Allows a single system to appear with different host and domain names to different processes.
+
+In the diagram below, there are three PID namespaces: one parent namespace and two child namespaces. The parent namespace contains four processes named PID1 through PID4. These processes can interact with each other and share resources.
+
+However, within the child namespaces, processes PID2 and PID3 have their own separate PID namespaces, and both are assigned PID 1 in their respective namespaces. From within these child namespaces, the process with PID 1 cannot see anything outside, including PID4 in the parent namespace.
+
+This isolation ensures that processes in different namespaces are separated and cannot directly interact with each other, enhancing overall system security and resource management.
+
+![Pid Namespaces](/imgs/linux/pid-namespaces.png)
+
+### Creating a Namespace
+
+Now, let's solidify our understanding by creating a new namespace. The Linux "unshare" command is a suitable starting point. According to the manual page, it performs precisely what we need:
+
+```bash filename="man page"
+NAME
+          unshare - run program in new name namespaces
+```
+
+I’m currently logged in as a regular user, `demo`, which has its own user ID, group, and so on, but not root privileges:
+
+```bash copy filename="Bash"
+demo@ubuntu:/root$ id
+uid=1001(demo) gid=1001(demo) groups=1001(demo)
+```
+
+I use the "unshare" command to create a new namespace with its own user and PID namespaces. I assign root privilege within this new namespace and mount a new proc filesystem. Then, I fork my process (bash) in the newly created namespace.
+
+```bash copy filename="Bash"
+demo@ubuntu:/root$ unshare --user --pid --map-root-user --mount-proc --fork bash
+```
+
+For those of you familiar with containers, this accomplishes the same thing as issuing the `<runtime> exec -it <image> /bin/bash` command in a running container.
+
+The `ps -ef` command shows there are two processes running – bash and the ps command itself – and the id command confirms that I’m root in the new namespace (which is also indicated by the changed command prompt):
+
+```bash showLineNumbers copy filename="Bash"
+root@ubuntu:/root# ps -ef
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 23:44 pts/0    00:00:00 bash
+root           3       1  0 23:48 pts/0    00:00:00 ps -ef
+root@ubuntu:/root# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+<Callout>
+  The crucial thing to notice is that I can see only the two processes in my
+  namespace, not any other processes running on the system. I am completely
+  isolated within my own namespace.
+</Callout>
+
+### Understanding a Namespace from Outside
+
+Inside the namespace, I cannot see other processes. However, using the "lsns" (list namespaces) command, I can view all available namespaces and their information from the perspective of the parent namespace (outside the new namespace).
+
+The output displays three namespaces: user, mnt, and pid. These namespaces correspond to the arguments used in the "unshare" command I executed earlier. From the external perspective, each namespace runs as user "demo" instead of root. But inside the namespace, processes have root privileges and access all expected resources. (The output may span across two lines for readability.)
+
+```bash {1} showLineNumbers copy filename="Bash"
+demo@ubuntu:/root$ lsns --output-all | head -1; lsns --output-all | grep svk
+        NS TYPE   PATH                   NPROCS    PID   PPID ...
+4026532690 user   /proc/97964/ns/user         2  97964  97944 ...
+4026532691 mnt    /proc/97964/ns/mnt          2  97964  97944 ...
+4026532692 pid    /proc/97965/ns/pid          1  97965  97964 ...
+```
+
+### Namespaces and Containers
+
+Namespaces are one of the technologies that containers are built on, used to enforce segregation of resources. We’ve shown how to create namespaces manually, but container runtimes like [Docker](https://www.docker.com/), [rkt](https://github.com/rkt/rkt), and [podman](https://podman.io/) make things easier by creating namespaces on your behalf.
+
+## Cgroups
+
+A control group (cgroup) is a Linux kernel feature that manages and isolates the resource usage (CPU, memory, disk I/O, network, etc.) of a group of processes.
+
+Cgroups offer the following capabilities:
+
+1. **Resource limits**: Set restrictions on how much of a specific resource (e.g., memory or CPU) a process can use.
+
+2. **Prioritization**: Control how much of a resource (CPU, disk, or network) a process can access compared to other processes in different cgroups during resource contention.
+
+3. **Accounting**: Monitor and report resource limits at the cgroup level.
+
+4. **Control**: Change the status of all processes in a cgroup collectively with a single command.
+
+In summary, cgroups are used to manage the access and usage of key resources (CPU, memory, network, and disk I/O) by processes or groups of processes. They are crucial in container environments where multiple processes need to be controlled together. In Kubernetes, cgroups are utilized to implement resource requests and limits, along with Quality of Service (QoS) classes at the pod level.
+
+The diagram shows that when you allocate a specific percentage of available system resources to a cgroup (cgroup-1), the remaining percentage is accessible to other cgroups and individual processes on the system.
+
+![cgroups](/imgs/linux/cgroups.png)
+
+### Cgroup Versions
+
+According to Wikipedia, the first version of cgroups was merged into the Linux kernel mainline in late 2007 or early 2008, and “the documentation of cgroups‑v2 first appeared in [the] Linux kernel … [in] 2016”. Among the many changes in version 2, the big ones are a much simplified tree architecture, new features and interfaces in the cgroup hierarchy, and better accommodation of “rootless” containers (with non‑zero UIDs).
+
+My favorite new interface in v2 is for pressure stall information (PSI). It provides insight into per‑process memory use and allocation in a much more granular way than was previously possible (this is beyond the scope of this blog, but is a very cool topic).
+
+### Creating a cgroup
+
+The following command creates a v1 cgroup (you can tell by pathname format) called foo and sets the memory limit for it to 50,000,000 bytes (50 MB).
+
+```
+root # mkdir -p /sys/fs/cgroup/memory/foo
+root # echo 50000000 > /sys/fs/cgroup/memory/foo/memory.limit_in_bytes
+```
+
+Now I can assign a process to the cgroup, thus imposing the cgroup’s memory limit on it. I’ve written a shell script called test.sh, which prints cgroup testing tool to the screen, and then waits doing nothing. For my purposes, it is a process that continues to run until I stop it.
+
+I start test.sh in the background and its PID is reported as 2428. The script produces its output and then I assign the process to the cgroup by piping its PID into the cgroup file /sys/fs/cgroup/memory/foo/cgroup.procs.
+
+```
+root # ./test.sh &
+[1] 2428
+root # cgroup testing tool
+root # echo 2428 > /sys/fs/cgroup/memory/foo/cgroup.procs
+```
+
+To validate that my process is in fact subject to the memory limits that I defined for cgroup foo, I run the following ps command. The -o cgroup flag displays the cgroups to which the specified process (2428) belongs. The output confirms that its memory cgroup is foo.
+
+```
+root # ps -o cgroup 2428
+CGROUP
+12:pids:/user.slice/user-0.slice/\
+session-13.scope,10:devices:/user.slice,6:memory:/foo,...
+```
+
+By default, the operating system terminates a process when it exceeds a resource limit defined by its cgroup.
+
+## Conclusion
+
+Namespaces and cgroups are the building blocks for containers and modern applications. Having an understanding of how they work is important as we refactor applications to more modern architectures.
+
+Namespaces provide isolation of system resources, and cgroups allow for fine‑grained control and enforcement of limits for those resources.
+
+Containers are not the only way that you can use namespaces and cgroups. Namespaces and cgroup interfaces are built into the Linux kernel, which means that other applications can use them to provide separation and resource constraints.

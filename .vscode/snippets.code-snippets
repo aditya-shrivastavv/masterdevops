@@ -35,5 +35,17 @@
       "|  |  |  |"
     ],
     "description": "Defination of anything, has a different font family set."
+  },
+  "Callout Equivalent": {
+    "scope": "mdx",
+    "prefix": "EquivalentCommands",
+    "body": [
+      "<Callout type=\"info\" emoji=\"➕\">",
+      "<ul>",
+      "<li>$1</li>",
+      "</ul>",
+      "</Callout>"
+    ],
+    "description": "Defination of anything, has a different font family set."
   }
 }

@@ -1,5 +1,6 @@
 {
   "history": "History",
   "filesystem": "File System",
-  "commands": "Linux Commands"
+  "commands": "Command Line Interface",
+  "namespaces-and-cgroups": "Namespaces and Cgroups"
 }
